@@ -37,7 +37,7 @@ tags:
 
 `SameSite` 在 2020 年初的正式启用，导致一些网站需要做一些比较困难的适配才能继续实现第三方访问的功能，虽然如此，但还是因为它是浏览器防御的一个补充而广受好评。这也直接导致了网络上出现了大量的关于 cookie 这个“新”属性机制的文章和讨论。
 
-## 术语玩的很溜，含义马马虎虎
+## 术语玩的很溜，定义马马虎虎
 
 这些帖子里，有一些写的很准确，比如 [Rowan Merwood](https://twitter.com/rowan_m) 的 [web.dev piece](https://web.dev/samesite-cookies-explained/) 中题为“SameSite cookies 的解释”一文。但大多数文章都没有好好解释清楚 *site* 这个概念，而 *same-site 请求* 和 *cross-site 请求* 正是从 *site* 这里衍生出来的两个概念。
 

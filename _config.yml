@@ -4,12 +4,12 @@
 
 # Site
 title: IGNO Workshop
-subtitle: ''
-description: ''
+subtitle: 'Just for fun'
+description: '主要内容包括自己平时学习的一些东西和翻译的一些文章，有时也会包含自己的一些观点～'
 keywords:
 author: Morris Liu
 language: en
-timezone: ''
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -104,3 +104,34 @@ theme: cactus
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# Theme config
+theme_config:
+  projects_url: http://github.com/realMorrisLiu
+  nav:
+    home: /
+    about: /about/
+    articles: /archives/
+    projects: http://github.com/realMorrisLiu
+  social_links:
+    github: http://github.com/realMorrisLiu
+    twitter: https://twitter.com/realMorrisLiu
+    facebook: https://www.facebook.com/morris.liu.923
+    linkedin: https://www.linkedin.com/in/realMorrisLiu
+    zhihu: https://www.zhihu.com/people/morrisliu1994
+    mail: mailto:morrisliu1994@outlook.com
+  copyright:
+    start_year: 2021
+    end_year:
+  rss: 
+  open_graph:
+    fb_app_id:
+    fb_admins:
+    twitter_id: realMorrisLiu
+    google_plus:
+  disqus:
+    enabled: true
+    shortname: igno-workshop
+  gravatar:
+    email: morrisliu1994@outlook.com
+    hash: 5f171941ea289f3e322d690afc84d950
