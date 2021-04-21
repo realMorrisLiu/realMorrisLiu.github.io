@@ -13,8 +13,8 @@
 <meta property="og:site_name" content="IGNO Workshop">
 <meta property="og:description" content="本文翻译自 Julien Cretel 的 The great SameSite confusion 原文链接：https:&#x2F;&#x2F;jub0bs.com&#x2F;posts&#x2F;2021-01-29-great-samesite-confusion&#x2F;  在本文中，我剖析了对 cookie 中 SameSite 属性的一个常见误解，并且探讨了这个问题对于 Web 安全的潜在影响。 太长不看 cookie 的 Sa">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2021-04-20T19:17:43.000Z">
-<meta property="article:modified_time" content="2021-04-20T12:16:44.125Z">
+<meta property="article:published_time" content="2021-04-20T11:17:43.000Z">
+<meta property="article:modified_time" content="2021-04-21T05:57:37.469Z">
 <meta property="article:author" content="Morris Liu">
 <meta property="article:tag" content="SameSite">
 <meta property="article:tag" content="cookies">
@@ -24,6 +24,7 @@
 <meta property="article:tag" content="subdomain">
 <meta property="article:tag" content="subdomain takeover">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@realMorrisLiu">
     
     
       
@@ -73,7 +74,7 @@
          
           <li><a href="/archives/">Writing</a></li>
          
-          <li><a href="/projects_url">Projects</a></li>
+          <li><a target="_blank" rel="noopener" href="http://github.com/realMorrisLiu">Projects</a></li>
         
       </ul>
     </span>
@@ -81,8 +82,8 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" aria-label="Previous post " href="/2021/04/21/hello-world/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
-        <li><a class="icon" aria-label="Next post " href="/2021/04/20/hello-world/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -110,7 +111,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E7%9A%84%E5%88%B0%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">SameSite 的到来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%90%AB%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，含义马马虎虎</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E7%9A%84%E5%88%B0%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">SameSite 的到来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，定义马马虎虎</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -134,7 +135,7 @@
       
     <div class="postdate">
       
-        <time datetime="2021-04-20T19:17:43.000Z" itemprop="datePublished">2021-04-20</time>
+        <time datetime="2021-04-20T11:17:43.000Z" itemprop="datePublished">2021-04-20</time>
         
       
     </div>
@@ -176,11 +177,17 @@
 <h2 id="SameSite-的到来"><a href="#SameSite-的到来" class="headerlink" title="SameSite 的到来"></a><code>SameSite</code> 的到来</h2><p>毫无疑问，你肯定听说过 cookie 的 <code>SameSite</code> 这个属性。2020 年 2 月份的时候，Chrome 的一个决定让 <code>SameSite</code> 登上头条：Chrome 决定改变 <code>SameSite</code> 的默认行为了；几个月后，Firefox 也做了相同的决定。</p>
 <p>自从 <code>SameSite</code> 在 2016 年被首次引入以来，它就一直是实现浏览器时要考虑的一个核心功能，旨在对 cross-site 攻击，例如 CSRF（cross-site request forgery）和 XSSI（cross-site script inclusion），进行深度防御。</p>
 <p><code>SameSite</code> 在 2020 年初的正式启用，导致一些网站需要做一些比较困难的适配才能继续实现第三方访问的功能，虽然如此，但还是因为它是浏览器防御的一个补充而广受好评。这也直接导致了网络上出现了大量的关于 cookie 这个“新”属性机制的文章和讨论。</p>
-<h2 id="术语玩的很溜，含义马马虎虎"><a href="#术语玩的很溜，含义马马虎虎" class="headerlink" title="术语玩的很溜，含义马马虎虎"></a>术语玩的很溜，含义马马虎虎</h2><p>这些帖子里，有一些写的很准确，比如 <a target="_blank" rel="noopener" href="https://twitter.com/rowan_m">Rowan Merwood</a> 的 <a target="_blank" rel="noopener" href="https://web.dev/samesite-cookies-explained/">web.dev piece</a> 中题为“SameSite cookies 的解释”一文。但大多数文章都没有好好解释清楚 <em>site</em> 这个概念，而 <em>same-site 请求</em> 和 <em>cross-site 请求</em> 正是从 <em>site</em> 这里衍生出来的两个概念。</p>
+<h2 id="术语玩的很溜，定义马马虎虎"><a href="#术语玩的很溜，定义马马虎虎" class="headerlink" title="术语玩的很溜，定义马马虎虎"></a>术语玩的很溜，定义马马虎虎</h2><p>这些帖子里，有一些写的很准确，比如 <a target="_blank" rel="noopener" href="https://twitter.com/rowan_m">Rowan Merwood</a> 的 <a target="_blank" rel="noopener" href="https://web.dev/samesite-cookies-explained/">web.dev piece</a> 中题为“SameSite cookies 的解释”一文。但大多数文章都没有好好解释清楚 <em>site</em> 这个概念，而 <em>same-site 请求</em> 和 <em>cross-site 请求</em> 正是从 <em>site</em> 这里衍生出来的两个概念。</p>
 <p><em>To be continued</em></p>
 
   </div>
 </article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
 
 
 
@@ -197,13 +204,13 @@
          
           <li><a href="/archives/">Writing</a></li>
          
-          <li><a href="/projects_url">Projects</a></li>
+          <li><a target="_blank" rel="noopener" href="http://github.com/realMorrisLiu">Projects</a></li>
         
       </ul>
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E7%9A%84%E5%88%B0%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">SameSite 的到来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%90%AB%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，含义马马虎虎</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E7%9A%84%E5%88%B0%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">SameSite 的到来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，定义马马虎虎</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -239,7 +246,7 @@
     Copyright &copy;
     
     
-    2016-2021
+    2021
     Morris Liu
   </div>
   <div class="footer-right">
@@ -252,7 +259,7 @@
          
           <li><a href="/archives/">Writing</a></li>
          
-          <li><a href="/projects_url">Projects</a></li>
+          <li><a target="_blank" rel="noopener" href="http://github.com/realMorrisLiu">Projects</a></li>
         
       </ul>
     </nav>
@@ -313,6 +320,18 @@
 <!-- Umami Analytics -->
 
 <!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'igno-workshop';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
 
 </body>
