@@ -80,4 +80,8 @@ tags:
 
 对这个术语的误用会对有些人有影响。在 Chrome 启用 `SameSite` 之后的几个月后，Google 的 Web 开发布道师北村英治（Eiji Kitamura）认为写一篇完整的关于 “origin” 和 “site” 区别的文章很有必要。
 
-为了理解为什么这个区别很重要，首先你需要搞懂 *origin* 和 *site* 之间的区别
+为了理解为什么这个差别很重要，首先你需要搞懂 *origin* 和 *site* 之间的区别。
+
+## 当我们说到 “origin” 的时候，我们想表达什么？
+
+*To be Continued...*
