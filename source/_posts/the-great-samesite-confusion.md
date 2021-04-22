@@ -82,6 +82,29 @@ tags:
 
 为了理解为什么这个差别很重要，首先你需要搞懂 *origin* 和 *site* 之间的区别。
 
-## 当我们说到 “origin” 的时候，我们想表达什么？
+## 我们说的 “origin” 是什么意思？
 
-*To be Continued...*
+如果你是 Web 开发人员，那你应该至少对 [Same-Origin 原则（SOP）](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)有所熟悉，这可以说是 Web 安全的主要支柱之一。显而易见，URI 的 *origin* 概念是 SOP 的核心，并且这个概念相对好理解一些。[RFC 6454 的 3.2 节](https://tools.ietf.org/html/rfc6454#section-3.2)中将 *origin* 定义成了一个三元组：
+
+> 总的来说，如果两个 URI 有同样的 scheme，host，和 port 的话，那它们同属于一个 origin（即，表示相同的主体）。
+
+其中 port 是可选的，如果没有指定 port 的话，会使用 scheme 的默认 port（例如 `http` 的 80 和 `https` 的 443）。[MDN Web 文档](https://developer.mozilla.org/en-us/docs/Glossary/Origin)中有一系列很有用的例子。
+
+## 我们说的 “site” 是什么意思？
+
+在这个令人头痛的通用术语之后，其实是 “site” 隐含了一种实际上比 *origin* 更难理解的概念。在一方面，术语 “site” 并不总是技术性的：它在 SOP 这个概念出现之前，通常被用于[出现 cross-site scripting 攻击的时候](https://blog.jeremiahgrossman.com/2006/07/origins-of-cross-site-scripting-xss.html)。另一方面，*site* 的现代概念充满了技术性困难。它与 host 的可注册 *域* 密切相关，*域* 在 [URL 当前标准](https://url.spec.whatwg.org/#host-registrable-domain)中是如下定义的：
+
+> ……，一个域由最具体的公共后缀和紧随其后的域标签（如果有）组成。
+
+（一个 host 的可注册域也称为 “eTLD+1”，是 “effective top-level domain plus one” 的缩写。）
+
+在最简单的情况下，**origin 的 site 仅对应于 origin 的 host 的可注册域（如果有）**。
+
+用这两个例子可以说明：
+
+- `https://www.example.org` 的 site 是 `example.org`，因为 `org` 是这个 host 的最具体的公共后缀，因此，`example.org` 是这个 host 的 eTLD+1。
+- `https://jub0bs.github.io` 的 site 是 `jub0bs.github.io`，因为 `github.io` 是这个 host 的最具体的公共后缀，因此，`jub0bs.github.io` 是这个 host 的 eTLD+1。
+
+没错！也许令人惊讶，[但 `github.io` 是一个公共后缀](https://publicsuffix.org/list/public_suffix_list.dat)！
+
+*To be continued...*
