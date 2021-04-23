@@ -107,4 +107,27 @@ tags:
 
 没错！也许令人惊讶，[但 `github.io` 是一个公共后缀](https://publicsuffix.org/list/public_suffix_list.dat)！
 
+这里应该记一下，可注册域的概念是动态的，因为这个概念依赖于[公共后缀表](https://publicsuffix.org/list/)，这个表并不是固定不变的，它会随着时间变化。更不用说不同的浏览器不一定会紧跟公共后缀表的修改而更新。
+
+技术细节不止于此！就像 web.dev 警告我们的那样，*site* 的概念仍在逐步形成中，并且会很快会纳入 scheme 之中。目前在 Chrome 中这个变动需要在 flag 里面去设置，但是不久之后就会变成一个正式的特性。但是，为了避免这种困难并延长这篇文章的相关性，在下面的内容中，我将仅考虑其 scheme 为 https 的 origins。
+
+## Same-site 请求 vs. cross-site 请求
+
+我们已经聊过了 *site* 的概念，现在我们终于可以聊一聊 *same-site* 和 *cross-site* 请求的概念了。一个给定的请求可以是 *same-site* 的，也可以是 *cross-site* 的。一个请求是 *same-site* 还是 *cross-site* 取决于请求的源 origin 和目标 origin 的 sites 的比较：
+
+- 如果这两个 sites 是一样的，那么这个请求就是 *same-site*；
+- 如果这两个 sites 不一样，那么这个请求就是 *cross-site*。
+
+这里有三个例子：
+
+1. 一个从 `https://foo.example.org` 发送到 `https://bar.example.org` 的请求是 same-site 的，因为这两个 origin 的 site 都是 `example.org`。
+2. 一个从 `https://foo.github.io` 发送到 `https://bar.github.io` 的请求是 cross-site 的，因为第一个 origin 的 site 是 `foo.github.io`，而第二个 origin 的 site 是 `bar.github.io`。
+3. 一个从 `https://foo.bar.example.org` 发送到 `https://bar.example.org` 的请求是 same-site 的，因为这两个 origin 的 site 都是 `example.org`。
+
+如果你坚持读到了这里，我很感谢你的耐心。注意：重点要来了！
+
+## Cross-origin，same-site 的请求
+
+所有 cross-site 的请求都一定是 cross-origin 的；这已经很明确了。然而，就像上面的第一个和第三个例子描述的，并不是所有的 cross-origin 的请求都是 cross-site 的。
+
 *To be continued...*
