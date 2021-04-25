@@ -130,4 +130,40 @@ tags:
 
 所有 cross-site 的请求都一定是 cross-origin 的；这已经很明确了。然而，就像上面的第一个和第三个例子描述的，并不是所有的 cross-origin 的请求都是 cross-site 的。
 
+![Venn-diagram](cor_vs_csr.svg)
+
+同时 `SameSite` 属性只和 cross-site 的请求有关；当一个请求是 cross-origin 但是是 same-site 的时候，这个属性不会生效。这就是为什么 *origin* 和 *site* 的区别很重要的原因。
+
+## 在线示例
+
+为了证明我的观点，我受到 Troy Hunt 的文章的启发，在 `samesitedemo.jub0bs.com` 上部署了一个包含两个 endpoint 的简单的 Go 服务。`/setcookie` 这个 endpoint 设置了一个 `SameSite=Strict` 的 cookie，就像这样：
+
+```http
+Set-Cookie: StrictCookie=foo; Path=/; Max-Age=3600; SameSite=Strict
+```
+
+`/readcookie` 打印请求所携带的 cookie（如果有的话）。同时我也设置了两个 “攻击” 页面：
+
+- https://jub0bs.github.io/samesitedemo-attacker-foiled
+- https://samesitedemo-attacker.jub0bs.com/
+
+这两个页面都只包含一个去 `https://samesitedemo.jub0bs.com/readcookie` 的链接。
+
+为了验证上面的想法，你可以这样做：
+
+1. 访问 https://samesitedemo.jub0bs.com/setcookie。这样做会把 `Strict` cookie 设置到你的浏览器中。
+2. 访问 https://jub0bs.github.io/samesitedemo-attacker-foiled 并且点击页面上的链接。因为攻击 URI 的 site（`jub0bs.github.io`）跟目标 URI 的 site（`jub0bs.com`）不同，浏览器在访问这个链接发送请求时不会携带上面设置的 cookie，所以响应中不会打印任何 cookie。`SameSite=Strict` 阻止了这个 “攻击”。
+3. 现在访问 https://samesitedemo-attacker.jub0bs.com/ 然后点击页面上的链接。因为攻击 URI 的 site（`jub0bs.com`）跟目标 URI 的 site（`jub0bs.com`）相同，浏览器就会在访问链接的请求中携带上面设置的 cookie，然后响应中也会打印出这个 cookie 来。这种情况下，“攻击” 就生效了。
+
+## 将 site 和 origin 混为一谈的代价
+
+### 错误的安全感
+
+
+
+### 对 `SameSite=Strict` 应用较慢
+
+
+
 *To be continued...*
+
