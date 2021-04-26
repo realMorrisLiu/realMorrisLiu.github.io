@@ -39,7 +39,7 @@ tags:
 
 ## 术语玩的很溜，定义马马虎虎
 
-这些帖子里，有一些写的很准确，比如 [Rowan Merwood](https://twitter.com/rowan_m) 的 [web.dev piece](https://web.dev/samesite-cookies-explained/) 中题为 “SameSite cookies 的解释” 一文。但大多数文章都没有好好解释清楚 *site* 这个概念，而 *same-site 请求* 和 *cross-site 请求* 正是从 *site* 这里衍生出来的两个概念。
+这些帖子里，有一些写的很准确，比如 [Rowan Merwood](https://twitter.com/rowan_m) 的 [web.dev piece](https://web.dev/samesite-cookies-explained/) 中题为 “SameSite cookie 的解释” 一文。但大多数文章都没有好好解释清楚 *site* 这个概念，而 *same-site 请求* 和 *cross-site 请求* 正是从 *site* 这里衍生出来的两个概念。
 
 不仅如此，还有很多帖子混淆了 “origin” 和 “site” 这两个术语，至少算是使用不严谨，这包括信息安全社区很有影响力的人写的一些东西。
 
@@ -49,17 +49,17 @@ tags:
 
 （重点是我加的）
 
-信息安全大佬 [Troy Hunt](https://twitter.com/troyhunt) 在一篇发布于 2020 年 1 月份题为 “ SameSite 策略使混乱的 Cookies 即将终结” [开创性的帖子](https://www.troyhunt.com/promiscuous-cookies-and-their-impending-death-via-the-samesite-policy/)中，描述了 `SameSite` 属性的不同取值的效果：
+信息安全大佬 [Troy Hunt](https://twitter.com/troyhunt) 在一篇发布于 2020 年 1 月份题为 “ SameSite 策略使混乱的 Cookie 即将终结” [开创性的帖子](https://www.troyhunt.com/promiscuous-cookies-and-their-impending-death-via-the-samesite-policy/)中，描述了 `SameSite` 属性的不同取值的效果：
 
 > 1. None：现在没有设置 SameSite 的值的时候，Chrome 的默认值是这个
-> 2. Lax：在 **cross-origin** 请求上携带 cookies 时有一些限制
-> 3. Strict：在 **cross-origin** 请求上携带 cookies 时有很严格的限制
+> 2. Lax：在 **cross-origin** 请求上携带 cookie 时有一些限制
+> 3. Strict：在 **cross-origin** 请求上携带 cookie 时有很严格的限制
 
 （重点是我加的）
 
 然后在几个月之后，在另一篇分析了 `SameSite` 的出现将会如何影响黑客们所珍视的一系列漏洞的引人入胜的[文章](https://blog.reconless.com/samesite-by-default/)中，[Reconless 团队](https://twitter.com/0xReconless)写了下面这段话：
 
-> 在更新之后，所有没有显式携带 `SameSite` 属性的 cookies 会被认为是 `SameSite=Lax`。这意味着除了顶级导航之外， **cross-origin** 请求再也不会携带 cookies。
+> 在更新之后，所有没有显式携带 `SameSite` 属性的 cookie 会被认为是 `SameSite=Lax`。这意味着除了顶级导航之外， **cross-origin** 请求再也不会携带 cookie。
 
 （重点是我加的）
 
@@ -159,11 +159,41 @@ Set-Cookie: StrictCookie=foo; Path=/; Max-Age=3600; SameSite=Strict
 
 ### 错误的安全感
 
+暗示 `SameSite` 会对 *所有* cross-origin 请求生效是有害的，因为这会导致开发人员错误的认为 `SameSite` 可以保护他们的用户受到 *所有* cross-origin 攻击。这样的误解对忽视检查子域的安全级别的开发者来说尤其危险。尤其是，
 
+- 子域接管，或
+- 在相同 site 的子域上的 [cross-site scripting（XSS）](https://owasp.org/www-community/attacks/xss/)的实例，或
+- 在相同 site 的子域上的 [HTML 注入](https://www.acunetix.com/vulnerabilities/web/html-injection/)实例
 
-### 对 `SameSite=Strict` 应用较慢
+可能足以使攻击者绕过 `SameSite` 提供的相对保护。
 
+子域接管是一种早在 2014 年[由 Detectify 带火](https://labs.detectify.com/2014/10/21/hostile-subdomain-takeover-using-herokugithubdesk-more/)的一种攻击方式。这种攻击方式利用子域上悬空的 DNS 记录来控制有问题的子域提供的部分或全部内容。攻击者可能会利用子域接管达到各种目的：污染、钓鱼等……还可以进行 cross-origin 攻击，否则就不可能有这样的效果！
 
+例如，如果攻击者有能力接管 `https://vulnerable.example.org`，那么他或她可能就能够从易受攻击的子域提供的前端代码向 `https://example.org`（或其任何子域）发送恶意请求；并且这样的 same-site 的请求将携带所有相关的cookie，而不管其 `SameSite` 属性的值如何！
+
+此类 cross-origin，same-site 的攻击甚至可能不需要子域接管。相同 site 的子域上存在 XSS 或者 HTML 注入漏洞可能足以满足攻击者发送恶意 cross-origin，same-site 请求的需要。
+
+------
+
+注：“跨站请求伪造” 在上面罗列的所有场景都是不恰当的用词，因为发出攻击 site 和成为目标的 site 是一致的；“跨域请求伪造”（CORF？）可以更贴切的描述这种攻击，不过我怀疑它能不能成为一个通用术语。
+
+------
+
+我发现令人着迷的是，与过去相比，`SameSite` 可能会使精明的攻击者更加关注你的子域和同级域，因为这些域正迅速成为针对坚韧的网络应用的 cross-origin 攻击的唯一漏洞。
+
+### 对 `SameSite=Strict` 采用较慢
+
+此外，这种误解也可能会由于对 `Lax` 值的偏好而减慢 `Strict` 值的采用。有些人确实在积极劝阻开发者们使用 `Strict` ，因为他们觉得 `Strict` 对可用性的影响比实际情况更严重。例如，在 Dareboost 的博客上，[你可以看到](https://web.archive.org/web/20201201211835/https://blog.dareboost.com/en/2017/06/secure-cookies-samesite-attribute/)下面的声明：
+
+> 如果我们在 `dareboost.com` 上使用 `Strict` `SameSite` 的话，那么不管你有没有连接上，点击这个链接都不会登录成功。
+
+这个声明是错误的：有问题的链接是在 `https://blog.dareboost.com` 上的，并且会跳转到 `https://www.dareboost.com` 上；因此，点击链接触发的请求是 same-site 请求，同时会携带 `www` 子域或者父级域的所有 cookie。
+
+这篇文章的作者总结道：
+
+> 最终用户会对这种行为产生困扰，所以你可能倾向于使用 `Lax` 模式。
+
+这只是不公正的贬低 `Strict` 值的一个例子，但是
 
 *To be continued...*
 
