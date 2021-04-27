@@ -110,6 +110,7 @@ deploy:
 
 # Theme config
 theme_config:
+  colorscheme: classic
   projects_url: http://github.com/realMorrisLiu
   nav:
     home: /
