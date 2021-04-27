@@ -193,7 +193,42 @@ Set-Cookie: StrictCookie=foo; Path=/; Max-Age=3600; SameSite=Strict
 
 > 最终用户会对这种行为产生困扰，所以你可能倾向于使用 `Lax` 模式。
 
-这只是不公正的贬低 `Strict` 值的一个例子，但是
+这只是不公正的贬低 `Strict` 值的一个例子，但是我敢肯定，你可以在网络上的其他地方找到更多示例。
 
-*To be continued...*
+## 结语
 
+我已经跟上面说到的所有我认为他们在对 `SameSite` 机制的描述上不准确的人联系过了。到目前为止，只有 Detectify 的 Kristian Bremberg 和 Reconless 的 Edwin Foudil（一般大家叫他 [@edoverflow](https://twitter.com/EdOverflow)）回复了我。我非常希望他们能在读完我这篇文章后修改自己的文章。我在 Troy Hunt 的帖子上写了一个[公开留言](https://www.troyhunt.com/promiscuous-cookies-and-their-impending-death-via-the-samesite-policy/#comment-5242338292)，但是他到现在还没联系我；同时我在 Twitter 上联系了 Dareboost，但也还没收到他们的回复。
+
+修改（2021/02/10）：Dareboost 已经[修改](https://blog.dareboost.com/en/2017/06/secure-cookies-samesite-attribute/)了他们的文章。
+
+记住：`SameSite` 是一种强大的深度防御机制，可以保护用户免受 cross-site 攻击，但是对于 cross-origin，same-site 的攻击没什么用。不要忽略这个细节！另外，如果你是防御方，那你可能会陷入一种虚假的安全之中，并且可能会被自己原本以为不可能的攻击蒙蔽了双眼；然后如果你是攻击方，那有可能会发现不了漏洞同时错过大笔 bug 奖金。
+
+## 补遗（2021/01/31）
+
+自从这篇文章第一次发表以来，我发现在描述 `SameSite` 机制时谨慎使用 “origin” 和 “site” 这两个术语的例子越来越多。我没有尝试联系过下面引用的文章的作者。
+
+时间回到 2016 年，Qbit Cyber Security 的 Web 应用黑客 Sjoerd Langkemper 在[他的博客](https://www.sjoerdlangkemper.nl/2016/04/14/preventing-csrf-with-samesite-cookie-attribute/)上写了下面这段话：
+
+> 这张表格说明了发送 **cross-origin** 请求时会携带哪些 cookie。你可以看到，没有带 same-site 属性的 cookie [……] 总是会被发出去。（属性为）strict 的 cookie 从不会被发出去。（属性为）Lax 的 cookie 只会被顶级 GET 请求携带。
+
+（重点是我加的）
+
+2018 年 5 月份，[Artur Janc](https://twitter.com/arturjanc) 和 [Mike West](https://twitter.com/mikewest)（[Same-site Cookie Internet 草案](https://tools.ietf.org/html/draft-west-first-party-cookies-07)的作者本人）发表了一篇题为 “我们如何停止跨 origin 的泄漏？” 的报告（[PDF](https://www.arturjanc.com/cross-origin-infoleaks.pdf)），在这篇报告里你可以看到以下描述：
+
+> SameSite cookie 并不能直接阻止攻击者加载 **cross-origin** 的资源，**但是会导致这类请求会在没有凭据的情况下发送出去**，这对攻击者来说意义不大。
+
+（重点是我加的）
+
+最后，[Wikipedia 上关于 CSRF 的页面](https://web.archive.org/web/20210202233343/https://en.wikipedia.org/wiki/Cross-site_request_forgery#SameSite_cookie_attribute)声明了如下内容：
+
+> 如果这个属性被设置为 “strict”，那么 cookie 只会跟随 **same-origin** 请求被发出去，使 CSRF 无效。
+
+（重点是我加的）
+
+修改（2021/02/07）：Wikipedia 上的这个页面[改对了](https://en.wikipedia.org/w/index.php?title=Cross-site_request_forgery&diff=prev&oldid=1004816813)。
+
+## 答谢
+
+我要感谢 Detectify 的 [Fredrik N. Almroth](https://twitter.com/Almroot)，他同意在发布之前审查此帖子的草稿。
+
+*End*
