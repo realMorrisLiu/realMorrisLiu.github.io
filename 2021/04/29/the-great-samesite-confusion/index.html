@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="本文翻译自 Julien Cretel 的 The great SameSite confusion 原文链接：https:&#x2F;&#x2F;jub0bs.com&#x2F;posts&#x2F;2021-01-29-great-samesite-confusion&#x2F;  在本文中，我剖析了对 cookie 中 SameSite 属性的一个常见误解，并且探讨了这个问题对于 Web 安全的潜在影响。 太长不看 cookie 的 Sa">
+    <meta name="description" content="本文翻译自 Julien Cretel 的 The great SameSite confusion 原文链接：https:&#x2F;&#x2F;jub0bs.com&#x2F;posts&#x2F;2021-01-29-great-samesite-confusion&#x2F;  在本文中，我对 cookie 中 SameSite 属性的一个常见误解进行了剖析，并且探讨了这个问题对于 Web 安全的潜在影响。 太长不看 cookie 的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于 SameSite 的巨大困惑">
-<meta property="og:url" content="https://igno.ml/2021/04/20/the-great-samesite-confusion/index.html">
+<meta property="og:url" content="https://igno.ml/2021/04/29/the-great-samesite-confusion/index.html">
 <meta property="og:site_name" content="IGNO Workshop">
-<meta property="og:description" content="本文翻译自 Julien Cretel 的 The great SameSite confusion 原文链接：https:&#x2F;&#x2F;jub0bs.com&#x2F;posts&#x2F;2021-01-29-great-samesite-confusion&#x2F;  在本文中，我剖析了对 cookie 中 SameSite 属性的一个常见误解，并且探讨了这个问题对于 Web 安全的潜在影响。 太长不看 cookie 的 Sa">
+<meta property="og:description" content="本文翻译自 Julien Cretel 的 The great SameSite confusion 原文链接：https:&#x2F;&#x2F;jub0bs.com&#x2F;posts&#x2F;2021-01-29-great-samesite-confusion&#x2F;  在本文中，我对 cookie 中 SameSite 属性的一个常见误解进行了剖析，并且探讨了这个问题对于 Web 安全的潜在影响。 太长不看 cookie 的">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://igno.ml/2021/04/20/the-great-samesite-confusion/cor_vs_csr.svg">
-<meta property="article:published_time" content="2021-04-20T11:17:43.000Z">
-<meta property="article:modified_time" content="2021-04-27T11:42:01.652Z">
+<meta property="og:image" content="https://igno.ml/2021/04/29/the-great-samesite-confusion/cor_vs_csr.svg">
+<meta property="article:published_time" content="2021-04-29T08:59:25.000Z">
+<meta property="article:modified_time" content="2021-04-29T09:01:24.781Z">
 <meta property="article:author" content="Morris Liu">
 <meta property="article:tag" content="SameSite">
 <meta property="article:tag" content="cookies">
@@ -25,7 +25,7 @@
 <meta property="article:tag" content="subdomain">
 <meta property="article:tag" content="subdomain takeover">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://igno.ml/2021/04/20/the-great-samesite-confusion/cor_vs_csr.svg">
+<meta name="twitter:image" content="https://igno.ml/2021/04/29/the-great-samesite-confusion/cor_vs_csr.svg">
 <meta name="twitter:creator" content="@realMorrisLiu">
     
     
@@ -96,22 +96,22 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://igno.ml/2021/04/20/the-great-samesite-confusion/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&text=关于 SameSite 的巨大困惑"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&is_video=false&description=关于 SameSite 的巨大困惑"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=关于 SameSite 的巨大困惑&body=Check out this article: https://igno.ml/2021/04/20/the-great-samesite-confusion/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&name=关于 SameSite 的巨大困惑&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://igno.ml/2021/04/20/the-great-samesite-confusion/&t=关于 SameSite 的巨大困惑"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://igno.ml/2021/04/29/the-great-samesite-confusion/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&text=关于 SameSite 的巨大困惑"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&is_video=false&description=关于 SameSite 的巨大困惑"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于 SameSite 的巨大困惑&body=Check out this article: https://igno.ml/2021/04/29/the-great-samesite-confusion/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&name=关于 SameSite 的巨大困惑&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://igno.ml/2021/04/29/the-great-samesite-confusion/&t=关于 SameSite 的巨大困惑"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E7%9A%84%E5%88%B0%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">SameSite 的到来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，定义马马虎虎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Csite%E2%80%9D-%E5%92%8C-%E2%80%9Corigin%E2%80%9D-%E5%8F%AF%E4%BB%A5%E6%B7%B7%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">“site” 和 “origin” 可以混用吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Corigin%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">我们说的 “origin” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Csite%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">我们说的 “site” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Same-site-%E8%AF%B7%E6%B1%82-vs-cross-site-%E8%AF%B7%E6%B1%82"><span class="toc-number">7.</span> <span class="toc-text">Same-site 请求 vs. cross-site 请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cross-origin%EF%BC%8Csame-site-%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="toc-number">8.</span> <span class="toc-text">Cross-origin，same-site 的请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E7%A4%BA%E4%BE%8B"><span class="toc-number">9.</span> <span class="toc-text">在线示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86-site-%E5%92%8C-origin-%E6%B7%B7%E4%B8%BA%E4%B8%80%E8%B0%88%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-number">10.</span> <span class="toc-text">将 site 和 origin 混为一谈的代价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F"><span class="toc-number">10.1.</span> <span class="toc-text">错误的安全感</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9-SameSite-Strict-%E9%87%87%E7%94%A8%E8%BE%83%E6%85%A2"><span class="toc-number">10.2.</span> <span class="toc-text">对 SameSite&#x3D;Strict 采用较慢</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">11.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E9%81%97%EF%BC%882021-01-31%EF%BC%89"><span class="toc-number">12.</span> <span class="toc-text">补遗（2021&#x2F;01&#x2F;31）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%94%E8%B0%A2"><span class="toc-number">13.</span> <span class="toc-text">答谢</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E4%B9%8B%E5%A7%8B"><span class="toc-number">2.</span> <span class="toc-text">SameSite 之始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，定义马马虎虎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Csite%E2%80%9D-%E5%92%8C-%E2%80%9Corigin%E2%80%9D-%E5%8F%AF%E4%BB%A5%E6%B7%B7%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">“site” 和 “origin” 可以混用吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Corigin%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">我们说的 “origin” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Csite%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">我们说的 “site” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Same-site-%E8%AF%B7%E6%B1%82-vs-cross-site-%E8%AF%B7%E6%B1%82"><span class="toc-number">7.</span> <span class="toc-text">Same-site 请求 vs. cross-site 请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cross-origin%EF%BC%8Csame-site-%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="toc-number">8.</span> <span class="toc-text">Cross-origin，same-site 的请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E7%A4%BA%E4%BE%8B"><span class="toc-number">9.</span> <span class="toc-text">在线示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86-site-%E5%92%8C-origin-%E6%B7%B7%E4%B8%BA%E4%B8%80%E8%B0%88%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-number">10.</span> <span class="toc-text">将 site 和 origin 混为一谈的代价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F"><span class="toc-number">10.1.</span> <span class="toc-text">错误的安全感</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9-SameSite-Strict-%E9%87%87%E7%94%A8%E8%BE%83%E6%85%A2"><span class="toc-number">10.2.</span> <span class="toc-text">对 SameSite&#x3D;Strict 采用较慢</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">11.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E9%81%97%EF%BC%882021-01-31%EF%BC%89"><span class="toc-number">12.</span> <span class="toc-text">补遗（2021&#x2F;01&#x2F;31）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%94%E8%B0%A2"><span class="toc-number">13.</span> <span class="toc-text">答谢</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -135,7 +135,7 @@
       
     <div class="postdate">
       
-        <time datetime="2021-04-20T11:17:43.000Z" itemprop="datePublished">2021-04-20</time>
+        <time datetime="2021-04-29T08:59:25.000Z" itemprop="datePublished">2021-04-29</time>
         
       
     </div>
@@ -164,22 +164,22 @@
 <p>本文翻译自 Julien Cretel 的 The great SameSite confusion</p>
 <p>原文链接：<a target="_blank" rel="noopener" href="https://jub0bs.com/posts/2021-01-29-great-samesite-confusion/">https://jub0bs.com/posts/2021-01-29-great-samesite-confusion/</a></p>
 </blockquote>
-<p>在本文中，我剖析了对 cookie 中 <code>SameSite</code> 属性的一个常见误解，并且探讨了这个问题对于 Web 安全的潜在影响。</p>
+<p>在本文中，我对 cookie 中 <code>SameSite</code> 属性的一个常见误解进行了剖析，并且探讨了这个问题对于 Web 安全的潜在影响。</p>
 <h2 id="太长不看"><a href="#太长不看" class="headerlink" title="太长不看"></a>太长不看</h2><ul>
 <li>cookie 的 <code>SameSite</code> 属性不太好理解。</li>
-<li>把 <em>site</em> 和 <em>origin</em> 混为一谈是一种很常见但是有害的错误。</li>
+<li>把 <em>site</em> 和 <em>origin</em> 混为一谈是一种很常见并且有害的错误。</li>
 <li><em>site</em> 的概念不够直观，很难理解。</li>
 <li>有些请求是 cross-origin 的，但同时又是 same-site 的。</li>
 <li><code>SameSite</code> 只对 cross-site 的请求有意义。</li>
-<li><code>SameSite</code> 在你的子域上设置了一个目标。</li>
+<li><code>SameSite</code> 在你的子域上画了一个靶子。</li>
 <li>被误导的开发人员可能会过度避免使用 <code>SameSite=Strict</code>。</li>
 </ul>
-<h2 id="SameSite-的到来"><a href="#SameSite-的到来" class="headerlink" title="SameSite 的到来"></a><code>SameSite</code> 的到来</h2><p>毫无疑问，你肯定听说过 cookie 的 <code>SameSite</code> 这个属性。2020 年 2 月份的时候，Chrome 的一个决定让 <code>SameSite</code> 登上头条：Chrome 决定改变 <code>SameSite</code> 的默认行为了；几个月后，Firefox 也做了相同的决定。</p>
-<p>自从 <code>SameSite</code> 在 2016 年被首次引入以来，它就一直是实现浏览器时要考虑的一个核心功能，旨在对 cross-site 攻击，例如 CSRF（cross-site request forgery）和 XSSI（cross-site script inclusion），进行深度防御。</p>
-<p><code>SameSite</code> 在 2020 年初的正式启用，导致一些网站需要做一些比较困难的适配才能继续实现第三方访问的功能，虽然如此，但还是因为它是浏览器防御的一个补充而广受好评。这也直接导致了网络上出现了大量的关于 cookie 这个 “新” 属性机制的文章和讨论。</p>
+<h2 id="SameSite-之始"><a href="#SameSite-之始" class="headerlink" title="SameSite 之始"></a><code>SameSite</code> 之始</h2><p>毫无疑问，你肯定听说过 cookie 的 <code>SameSite</code> 属性。2020 年 2 月份的时候，Chrome 开始推出对 <code>SameSite</code> 的默认行为的变更，这让 <code>SameSite</code> 登上头条；几个月后，Firefox 也<a target="_blank" rel="noopener" href="https://hacks.mozilla.org/2020/08/changes-to-samesite-cookie-behavior/">随之效仿</a>。</p>
+<p>自从 <code>SameSite</code> 在 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/draft-west-first-party-cookies-07">2016 年被首次引入</a>以来，它就一直是实现浏览器时要考虑的一个核心功能，旨在对 cross-site 攻击，例如 <a target="_blank" rel="noopener" href="https://owasp.org/www-community/attacks/csrf">CSRF（cross-site request forgery）</a>和 <a target="_blank" rel="noopener" href="https://www.scip.ch/en/?labs.20160414">XSSI（cross-site script inclusion）</a>，进行深度防御。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chromium.org/2020/02/samesite-cookie-changes-in-february.html"><code>SameSite</code> 在 2020 年初的正式启用</a>，导致一些网站需要做一些比较困难的适配才能继续实现第三方访问的功能，虽然如此，但还是因为它是浏览器防御的一个补充而广受好评。这也直接导致了网络上出现了大量的关于 cookie 这个 “新” 属性机制的文章和讨论。</p>
 <h2 id="术语玩的很溜，定义马马虎虎"><a href="#术语玩的很溜，定义马马虎虎" class="headerlink" title="术语玩的很溜，定义马马虎虎"></a>术语玩的很溜，定义马马虎虎</h2><p>这些帖子里，有一些写的很准确，比如 <a target="_blank" rel="noopener" href="https://twitter.com/rowan_m">Rowan Merwood</a> 的 <a target="_blank" rel="noopener" href="https://web.dev/samesite-cookies-explained/">web.dev piece</a> 中题为 “SameSite cookie 的解释” 一文。但大多数文章都没有好好解释清楚 <em>site</em> 这个概念，而 <em>same-site 请求</em> 和 <em>cross-site 请求</em> 正是从 <em>site</em> 这里衍生出来的两个概念。</p>
-<p>不仅如此，还有很多帖子混淆了 “origin” 和 “site” 这两个术语，至少算是使用不严谨，这包括信息安全社区很有影响力的人写的一些东西。</p>
-<p>回到 2019 年 2 月份，Kristian Bremberg 在 Detectify 博客上<a target="_blank" rel="noopener" href="https://blog.detectify.com/2019/02/05/guide-http-security-headers-for-better-web-browser-security/">写了以下内容</a>：</p>
+<p>不仅如此，还有很多帖子混淆了 “origin” 和 “site” 这两个术语，至少算是使用不严谨，其中包括信息安全社区很有影响力的人写的一些东西。</p>
+<p>2019 年 2 月份的时候，Kristian Bremberg 在 Detectify 博客上<a target="_blank" rel="noopener" href="https://blog.detectify.com/2019/02/05/guide-http-security-headers-for-better-web-browser-security/">写了以下内容</a>：</p>
 <blockquote>
 <p>SameSite 是一个很新并且对防御 CSRF 攻击很有效的属性。如果一个 cookie 中使用了 SameSite 这个属性，那么浏览器会确保携带有这个 cookie 的请求一定来自这个 cookie 所属的 <strong>origin</strong> [原文如此]。</p>
 </blockquote>
@@ -193,47 +193,47 @@
 </ol>
 </blockquote>
 <p>（重点是我加的）</p>
-<p>然后在几个月之后，在另一篇分析了 <code>SameSite</code> 的出现将会如何影响黑客们所珍视的一系列漏洞的引人入胜的<a target="_blank" rel="noopener" href="https://blog.reconless.com/samesite-by-default/">文章</a>中，<a target="_blank" rel="noopener" href="https://twitter.com/0xReconless">Reconless 团队</a>写了下面这段话：</p>
+<p>几个月之后，在另一篇分析 <code>SameSite</code> 的出现，将会对黑客们所珍视的一系列漏洞产生什么样的影响的引人入胜的<a target="_blank" rel="noopener" href="https://blog.reconless.com/samesite-by-default/">文章</a>中，<a target="_blank" rel="noopener" href="https://twitter.com/0xReconless">Reconless 团队</a>写了下面这段话：</p>
 <blockquote>
 <p>在更新之后，所有没有显式携带 <code>SameSite</code> 属性的 cookie 会被认为是 <code>SameSite=Lax</code>。这意味着除了顶级导航之外， <strong>cross-origin</strong> 请求再也不会携带 cookie。</p>
 </blockquote>
 <p>（重点是我加的）</p>
-<p><em>Domain</em>，<em>host</em>，<em>origin</em>，<em>site</em>…… 在平时的交流中很自然的会无法准确使用这些术语；当然，可以原谅对这些术语不严谨的使用，如果你对此感到负罪感，那更好。</p>
+<p><em>Domain</em>，<em>host</em>，<em>origin</em>，<em>site</em>…… 在平时的交流中随意使用这些术语是一件很自然的事情；对这些术语的滥用情有可原，不过如果你对此感到有一丝负罪感，那更好。</p>
 <h2 id="“site”-和-“origin”-可以混用吗？"><a href="#“site”-和-“origin”-可以混用吗？" class="headerlink" title="“site” 和 “origin” 可以混用吗？"></a>“site” 和 “origin” 可以混用吗？</h2><p>然而，<code>SameSite</code> 属性的出现带来了一些问题……</p>
 <ul>
 <li>在这种场景下，是否有必要仔细区分 “origin” 和 “site”？</li>
 <li>这两者是否只是拼写不同，而本质是一样的？</li>
-<li><em>cross-site</em> 请求和 <em>cross-origin</em> 请求之间毫无区别？</li>
-<li>那这个 cookie 属性也能被叫做 “SameOrigin” 吗？</li>
-<li>或者说，“site” 和 “origin” 之间到底有没有真正的区别，对实现有影响吗？</li>
+<li><em>cross-site</em> 请求和 <em>cross-origin</em> 请求之间毫无区别吗？</li>
+<li>那 cookie 的这个属性也能被叫做 “SameOrigin” 吗？</li>
+<li>或者说，“site” 和 “origin” 之间到底有没有真正的区别，对实际使用有影响吗？</li>
 <li>然后，如果这个区别确实有影响的话，那是什么样的影响？</li>
 </ul>
-<p>你可能已经根据本文的标题猜到了答案：在 <code>SameSite</code> 这个上下文中，“site” 有一个非常技术性的含义，然而却被过度忽视了； <em>site</em> 和 <em>origin</em> 之间的区别也确实会有影响，然而这两个概念经常会被混淆。</p>
-<p>对这个术语的误用会对有些人有影响。在 Chrome 启用 <code>SameSite</code> 之后的几个月后，Google 的 Web 开发布道师北村英治（Eiji Kitamura）认为写一篇完整的关于 “origin” 和 “site” 区别的文章很有必要。</p>
-<p>为了理解为什么这个差别很重要，首先你需要搞懂 <em>origin</em> 和 <em>site</em> 之间的区别。</p>
+<p>你可能已经根据本文的标题猜到了答案：在 <code>SameSite</code> 的语境中，“site” 有一个非常技术性的含义，不过却被过度忽视了； <em>site</em> 和 <em>origin</em> 之间的区别也确实会有影响，但是这两个概念经常会被混为一谈。</p>
+<p>并不是所有人都无视了这个术语的误用。在 Chrome 启用 <code>SameSite</code> 之后的几个月后，Google 的 Web 开发布道师北村英治（Eiji Kitamura）认为写一篇完整的关于 “origin” 和 “site” 区别的文章很有必要。</p>
+<p>为了理解为什么这个区别很重要，首先你需要搞懂 <em>origin</em> 和 <em>site</em> 之间的区别。</p>
 <h2 id="我们说的-“origin”-是什么意思？"><a href="#我们说的-“origin”-是什么意思？" class="headerlink" title="我们说的 “origin” 是什么意思？"></a>我们说的 “origin” 是什么意思？</h2><p>如果你是 Web 开发人员，那你应该至少对 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy">Same-Origin 原则（SOP）</a>有所熟悉，这可以说是 Web 安全的主要支柱之一。显而易见，URI 的 <em>origin</em> 概念是 SOP 的核心，并且这个概念相对好理解一些。<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6454#section-3.2">RFC 6454 的 3.2 节</a>中将 <em>origin</em> 定义成了一个三元组：</p>
 <blockquote>
 <p>总的来说，如果两个 URI 有同样的 scheme，host，和 port 的话，那它们同属于一个 origin（即，表示相同的主体）。</p>
 </blockquote>
 <p>其中 port 是可选的，如果没有指定 port 的话，会使用 scheme 的默认 port（例如 <code>http</code> 的 80 和 <code>https</code> 的 443）。<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-us/docs/Glossary/Origin">MDN Web 文档</a>中有一系列很有用的例子。</p>
-<h2 id="我们说的-“site”-是什么意思？"><a href="#我们说的-“site”-是什么意思？" class="headerlink" title="我们说的 “site” 是什么意思？"></a>我们说的 “site” 是什么意思？</h2><p>在这个令人头痛的通用术语之后，其实是 “site” 隐含了一种实际上比 <em>origin</em> 更难理解的概念。在一方面，术语 “site” 并不总是技术性的：它在 SOP 这个概念出现之前，通常被用于<a target="_blank" rel="noopener" href="https://blog.jeremiahgrossman.com/2006/07/origins-of-cross-site-scripting-xss.html">出现 cross-site scripting 攻击的时候</a>。另一方面，<em>site</em> 的现代概念充满了技术性困难。它与 host 的可注册 <em>域</em> 密切相关，<em>域</em> 在 <a target="_blank" rel="noopener" href="https://url.spec.whatwg.org/#host-registrable-domain">URL 当前标准</a>中是如下定义的：</p>
+<h2 id="我们说的-“site”-是什么意思？"><a href="#我们说的-“site”-是什么意思？" class="headerlink" title="我们说的 “site” 是什么意思？"></a>我们说的 “site” 是什么意思？</h2><p>在这个令人头痛的通用术语之后，其实是 “site” 隐含了一种实际上比 <em>origin</em> 更难理解的概念。在一方面，术语 “site” 并不总是表达一个意思：它在 SOP 这个概念之前，通常被用于<a target="_blank" rel="noopener" href="https://blog.jeremiahgrossman.com/2006/07/origins-of-cross-site-scripting-xss.html">出现 cross-site scripting 攻击的时候</a>。此外，<em>site</em> 的现代概念充满了技术难题。它与 host 的可注册 <em>域</em> 密切相关，<em>域</em> 在 <a target="_blank" rel="noopener" href="https://url.spec.whatwg.org/#host-registrable-domain">URL 当前标准</a>中是如下定义的：</p>
 <blockquote>
 <p>……，一个域由最具体的公共后缀和紧随其后的域标签（如果有）组成。</p>
 </blockquote>
 <p>（一个 host 的可注册域也称为 “eTLD+1”，是 “effective top-level domain plus one” 的缩写。）</p>
 <p>在最简单的情况下，<strong>origin 的 site 仅对应于 origin 的 host 的可注册域（如果有）</strong>。</p>
-<p>用这两个例子可以说明：</p>
+<p>以下两个例子可以说明：</p>
 <ul>
 <li><code>https://www.example.org</code> 的 site 是 <code>example.org</code>，因为 <code>org</code> 是这个 host 的最具体的公共后缀，因此，<code>example.org</code> 是这个 host 的 eTLD+1。</li>
 <li><code>https://jub0bs.github.io</code> 的 site 是 <code>jub0bs.github.io</code>，因为 <code>github.io</code> 是这个 host 的最具体的公共后缀，因此，<code>jub0bs.github.io</code> 是这个 host 的 eTLD+1。</li>
 </ul>
 <p>没错！也许令人惊讶，<a target="_blank" rel="noopener" href="https://publicsuffix.org/list/public_suffix_list.dat">但 <code>github.io</code> 是一个公共后缀</a>！</p>
-<p>这里应该记一下，可注册域的概念是动态的，因为这个概念依赖于<a target="_blank" rel="noopener" href="https://publicsuffix.org/list/">公共后缀表</a>，这个表并不是固定不变的，它会随着时间变化。更不用说不同的浏览器不一定会紧跟公共后缀表的修改而更新。</p>
-<p>技术细节不止于此！就像 web.dev 警告我们的那样，<em>site</em> 的概念仍在逐步形成中，并且会很快会纳入 scheme 之中。目前在 Chrome 中这个变动需要在 flag 里面去设置，但是不久之后就会变成一个正式的特性。但是，为了避免这种困难并延长这篇文章的相关性，在下面的内容中，我将仅考虑其 scheme 为 https 的 origins。</p>
-<h2 id="Same-site-请求-vs-cross-site-请求"><a href="#Same-site-请求-vs-cross-site-请求" class="headerlink" title="Same-site 请求 vs. cross-site 请求"></a>Same-site 请求 vs. cross-site 请求</h2><p>我们已经聊过了 <em>site</em> 的概念，现在我们终于可以聊一聊 <em>same-site</em> 和 <em>cross-site</em> 请求的概念了。一个给定的请求可以是 <em>same-site</em> 的，也可以是 <em>cross-site</em> 的。一个请求是 <em>same-site</em> 还是 <em>cross-site</em> 取决于请求的源 origin 和目标 origin 的 sites 的比较：</p>
+<p>这里要说明一下，可注册域的概念是动态的，因为这个概念依赖于<a target="_blank" rel="noopener" href="https://publicsuffix.org/list/">公共后缀表</a>，这个表并不是固定不变的，它会随着时间变化。更不用说各浏览器也不一定会紧跟公共后缀表的修改而更新。</p>
+<p>技术细节不止于此！就像 web.dev 警告我们的那样，<em>site</em> 的概念仍在逐步形成中，并且会很快会纳入 scheme 之中。目前在 Chrome 中想使用这个功能的话，需要到 flag 里面去设置，但是不久之后就会变成一个正式的特性。但是，为了避免这种困难并延长这篇文章的相关性，在下面的内容中，我将仅考虑其 scheme 为 https 的 origin。</p>
+<h2 id="Same-site-请求-vs-cross-site-请求"><a href="#Same-site-请求-vs-cross-site-请求" class="headerlink" title="Same-site 请求 vs. cross-site 请求"></a>Same-site 请求 vs. cross-site 请求</h2><p>我们已经聊过了 <em>site</em> 的概念，现在我们终于可以聊一聊 <em>same-site</em> 和 <em>cross-site</em> 请求的概念了。一个给定的请求可以是 <em>same-site</em> 的，也可以是 <em>cross-site</em> 的。一个请求是 <em>same-site</em> 还是 <em>cross-site</em> 取决于请求的源 origin 和目标 origin 的 site 的比较：</p>
 <ul>
-<li>如果这两个 sites 是一样的，那么这个请求就是 <em>same-site</em>；</li>
-<li>如果这两个 sites 不一样，那么这个请求就是 <em>cross-site</em>。</li>
+<li>如果这两个 site 一样，那么这个请求就是 <em>same-site</em>；</li>
+<li>如果这两个 site 不一样，那么这个请求就是 <em>cross-site</em>。</li>
 </ul>
 <p>这里有三个例子：</p>
 <ol>
@@ -242,8 +242,8 @@
 <li>一个从 <code>https://foo.bar.example.org</code> 发送到 <code>https://bar.example.org</code> 的请求是 same-site 的，因为这两个 origin 的 site 都是 <code>example.org</code>。</li>
 </ol>
 <p>如果你坚持读到了这里，我很感谢你的耐心。注意：重点要来了！</p>
-<h2 id="Cross-origin，same-site-的请求"><a href="#Cross-origin，same-site-的请求" class="headerlink" title="Cross-origin，same-site 的请求"></a>Cross-origin，same-site 的请求</h2><p>所有 cross-site 的请求都一定是 cross-origin 的；这已经很明确了。然而，就像上面的第一个和第三个例子描述的，并不是所有的 cross-origin 的请求都是 cross-site 的。</p>
-<p><img src="/2021/04/20/the-great-samesite-confusion/cor_vs_csr.svg" alt="Venn-diagram"></p>
+<h2 id="Cross-origin，same-site-的请求"><a href="#Cross-origin，same-site-的请求" class="headerlink" title="Cross-origin，same-site 的请求"></a>Cross-origin，same-site 的请求</h2><p>现在明确的是，所有 cross-site 的请求都一定是 cross-origin 的。但就像上面的第一个和第三个例子描述的，并不是所有的 cross-origin 的请求都是 cross-site 的。</p>
+<p><img src="/2021/04/29/the-great-samesite-confusion/cor_vs_csr.svg" alt="Venn-diagram"></p>
 <p>同时 <code>SameSite</code> 属性只和 cross-site 的请求有关；当一个请求是 cross-origin 但是是 same-site 的时候，这个属性不会生效。这就是为什么 <em>origin</em> 和 <em>site</em> 的区别很重要的原因。</p>
 <h2 id="在线示例"><a href="#在线示例" class="headerlink" title="在线示例"></a>在线示例</h2><p>为了证明我的观点，我受到 Troy Hunt 的文章的启发，在 <code>samesitedemo.jub0bs.com</code> 上部署了一个包含两个 endpoint 的简单的 Go 服务。<code>/setcookie</code> 这个 endpoint 设置了一个 <code>SameSite=Strict</code> 的 cookie，就像这样：</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Set-Cookie</span><span class="punctuation">: </span>StrictCookie=foo; Path=/; Max-Age=3600; SameSite=Strict</span><br></pre></td></tr></table></figure>
@@ -258,9 +258,9 @@
 <ol>
 <li>访问 <a target="_blank" rel="noopener" href="https://samesitedemo.jub0bs.com/setcookie%E3%80%82%E8%BF%99%E6%A0%B7%E5%81%9A%E4%BC%9A%E6%8A%8A">https://samesitedemo.jub0bs.com/setcookie。这样做会把</a> <code>Strict</code> cookie 设置到你的浏览器中。</li>
 <li>访问 <a target="_blank" rel="noopener" href="https://jub0bs.github.io/samesitedemo-attacker-foiled">https://jub0bs.github.io/samesitedemo-attacker-foiled</a> 并且点击页面上的链接。因为攻击 URI 的 site（<code>jub0bs.github.io</code>）跟目标 URI 的 site（<code>jub0bs.com</code>）不同，浏览器在访问这个链接发送请求时不会携带上面设置的 cookie，所以响应中不会打印任何 cookie。<code>SameSite=Strict</code> 阻止了这个 “攻击”。</li>
-<li>现在访问 <a target="_blank" rel="noopener" href="https://samesitedemo-attacker.jub0bs.com/">https://samesitedemo-attacker.jub0bs.com/</a> 然后点击页面上的链接。因为攻击 URI 的 site（<code>jub0bs.com</code>）跟目标 URI 的 site（<code>jub0bs.com</code>）相同，浏览器就会在访问链接的请求中携带上面设置的 cookie，然后响应中也会打印出这个 cookie 来。这种情况下，“攻击” 就生效了。</li>
+<li>现在访问 <a target="_blank" rel="noopener" href="https://samesitedemo-attacker.jub0bs.com/">https://samesitedemo-attacker.jub0bs.com/</a> 然后点击页面上的链接。因为攻击 URI 的 site（<code>jub0bs.com</code>）跟目标 URI 的 site（<code>jub0bs.com</code>）相同，浏览器就会在访问链接的请求中携带上面设置的 cookie，然后响应中也会打印出这个 cookie 来。在这种情况下，“攻击” 就会生效。</li>
 </ol>
-<h2 id="将-site-和-origin-混为一谈的代价"><a href="#将-site-和-origin-混为一谈的代价" class="headerlink" title="将 site 和 origin 混为一谈的代价"></a>将 site 和 origin 混为一谈的代价</h2><h3 id="错误的安全感"><a href="#错误的安全感" class="headerlink" title="错误的安全感"></a>错误的安全感</h3><p>暗示 <code>SameSite</code> 会对 <em>所有</em> cross-origin 请求生效是有害的，因为这会导致开发人员错误的认为 <code>SameSite</code> 可以保护他们的用户受到 <em>所有</em> cross-origin 攻击。这样的误解对忽视检查子域的安全级别的开发者来说尤其危险。尤其是，</p>
+<h2 id="将-site-和-origin-混为一谈的代价"><a href="#将-site-和-origin-混为一谈的代价" class="headerlink" title="将 site 和 origin 混为一谈的代价"></a>将 site 和 origin 混为一谈的代价</h2><h3 id="错误的安全感"><a href="#错误的安全感" class="headerlink" title="错误的安全感"></a>错误的安全感</h3><p>暗示 <code>SameSite</code> 对 <em>所有</em> cross-origin 请求生效会有坏处，因为这会导致开发人员错误的认为 <code>SameSite</code> 可以保护他们的用户受到 <em>所有</em> cross-origin 攻击。这钟误解对忽视检查子域的安全级别的开发者来说尤其危险。尤其是，</p>
 <ul>
 <li>子域接管，或</li>
 <li>在相同 site 的子域上的 <a target="_blank" rel="noopener" href="https://owasp.org/www-community/attacks/xss/">cross-site scripting（XSS）</a>的实例，或</li>
@@ -268,13 +268,13 @@
 </ul>
 <p>可能足以使攻击者绕过 <code>SameSite</code> 提供的相对保护。</p>
 <p>子域接管是一种早在 2014 年<a target="_blank" rel="noopener" href="https://labs.detectify.com/2014/10/21/hostile-subdomain-takeover-using-herokugithubdesk-more/">由 Detectify 带火</a>的一种攻击方式。这种攻击方式利用子域上悬空的 DNS 记录来控制有问题的子域提供的部分或全部内容。攻击者可能会利用子域接管达到各种目的：污染、钓鱼等……还可以进行 cross-origin 攻击，否则就不可能有这样的效果！</p>
-<p>例如，如果攻击者有能力接管 <code>https://vulnerable.example.org</code>，那么他或她可能就能够从易受攻击的子域提供的前端代码向 <code>https://example.org</code>（或其任何子域）发送恶意请求；并且这样的 same-site 的请求将携带所有相关的cookie，而不管其 <code>SameSite</code> 属性的值如何！</p>
+<p>例如，如果攻击者有能力接管 <code>https://vulnerable.example.org</code>，那么他或她可能就能够从易受攻击的子域提供的前端代码向 <code>https://example.org</code>（或其任何子域）发送恶意请求；并且不管 <code>SameSite</code> 属性的值是什么，这样的 same-site 的请求将会携带所有相关的cookie！</p>
 <p>此类 cross-origin，same-site 的攻击甚至可能不需要子域接管。相同 site 的子域上存在 XSS 或者 HTML 注入漏洞可能足以满足攻击者发送恶意 cross-origin，same-site 请求的需要。</p>
 <hr>
-<p>注：“跨站请求伪造” 在上面罗列的所有场景都是不恰当的用词，因为发出攻击 site 和成为目标的 site 是一致的；“跨域请求伪造”（CORF？）可以更贴切的描述这种攻击，不过我怀疑它能不能成为一个通用术语。</p>
+<p>注：“跨站请求伪造” 在上面罗列的所有场景都是不恰当的用词，因为发出攻击 site 和成为目标的 site 是一致的；“跨源请求伪造”（CORF？）可以更贴切的描述这种攻击，不过我怀疑它能不能成为一个通用术语。</p>
 <hr>
-<p>我发现令人着迷的是，与过去相比，<code>SameSite</code> 可能会使精明的攻击者更加关注你的子域和同级域，因为这些域正迅速成为针对坚韧的网络应用的 cross-origin 攻击的唯一漏洞。</p>
-<h3 id="对-SameSite-Strict-采用较慢"><a href="#对-SameSite-Strict-采用较慢" class="headerlink" title="对 SameSite=Strict 采用较慢"></a>对 <code>SameSite=Strict</code> 采用较慢</h3><p>此外，这种误解也可能会由于对 <code>Lax</code> 值的偏好而减慢 <code>Strict</code> 值的采用。有些人确实在积极劝阻开发者们使用 <code>Strict</code> ，因为他们觉得 <code>Strict</code> 对可用性的影响比实际情况更严重。例如，在 Dareboost 的博客上，<a target="_blank" rel="noopener" href="https://web.archive.org/web/20201201211835/https://blog.dareboost.com/en/2017/06/secure-cookies-samesite-attribute/">你可以看到</a>下面的声明：</p>
+<p>我发现有趣的是，与过去相比，<code>SameSite</code> 可能会使精明的攻击者更加关注你的子域和同级域，因为这些域正迅速成为针对坚固的网络应用的 cross-origin 攻击的唯一漏洞。</p>
+<h3 id="对-SameSite-Strict-采用较慢"><a href="#对-SameSite-Strict-采用较慢" class="headerlink" title="对 SameSite=Strict 采用较慢"></a>对 <code>SameSite=Strict</code> 采用较慢</h3><p>此外，这种误解也可能会由于对 <code>Lax</code> 值的偏好而减慢 <code>Strict</code> 值的采用。确实，有些人在积极劝阻开发者们使用 <code>Strict</code> ，因为他们觉得 <code>Strict</code> 对可用性的影响比实际情况更严重。例如，在 Dareboost 的博客上，<a target="_blank" rel="noopener" href="https://web.archive.org/web/20201201211835/https://blog.dareboost.com/en/2017/06/secure-cookies-samesite-attribute/">你可以看到</a>下面的声明：</p>
 <blockquote>
 <p>如果我们在 <code>dareboost.com</code> 上使用 <code>Strict</code> <code>SameSite</code> 的话，那么不管你有没有连接上，点击这个链接都不会登录成功。</p>
 </blockquote>
@@ -337,22 +337,22 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E7%9A%84%E5%88%B0%E6%9D%A5"><span class="toc-number">2.</span> <span class="toc-text">SameSite 的到来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，定义马马虎虎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Csite%E2%80%9D-%E5%92%8C-%E2%80%9Corigin%E2%80%9D-%E5%8F%AF%E4%BB%A5%E6%B7%B7%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">“site” 和 “origin” 可以混用吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Corigin%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">我们说的 “origin” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Csite%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">我们说的 “site” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Same-site-%E8%AF%B7%E6%B1%82-vs-cross-site-%E8%AF%B7%E6%B1%82"><span class="toc-number">7.</span> <span class="toc-text">Same-site 请求 vs. cross-site 请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cross-origin%EF%BC%8Csame-site-%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="toc-number">8.</span> <span class="toc-text">Cross-origin，same-site 的请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E7%A4%BA%E4%BE%8B"><span class="toc-number">9.</span> <span class="toc-text">在线示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86-site-%E5%92%8C-origin-%E6%B7%B7%E4%B8%BA%E4%B8%80%E8%B0%88%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-number">10.</span> <span class="toc-text">将 site 和 origin 混为一谈的代价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F"><span class="toc-number">10.1.</span> <span class="toc-text">错误的安全感</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9-SameSite-Strict-%E9%87%87%E7%94%A8%E8%BE%83%E6%85%A2"><span class="toc-number">10.2.</span> <span class="toc-text">对 SameSite&#x3D;Strict 采用较慢</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">11.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E9%81%97%EF%BC%882021-01-31%EF%BC%89"><span class="toc-number">12.</span> <span class="toc-text">补遗（2021&#x2F;01&#x2F;31）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%94%E8%B0%A2"><span class="toc-number">13.</span> <span class="toc-text">答谢</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%AA%E9%95%BF%E4%B8%8D%E7%9C%8B"><span class="toc-number">1.</span> <span class="toc-text">太长不看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SameSite-%E4%B9%8B%E5%A7%8B"><span class="toc-number">2.</span> <span class="toc-text">SameSite 之始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%E7%8E%A9%E7%9A%84%E5%BE%88%E6%BA%9C%EF%BC%8C%E5%AE%9A%E4%B9%89%E9%A9%AC%E9%A9%AC%E8%99%8E%E8%99%8E"><span class="toc-number">3.</span> <span class="toc-text">术语玩的很溜，定义马马虎虎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Csite%E2%80%9D-%E5%92%8C-%E2%80%9Corigin%E2%80%9D-%E5%8F%AF%E4%BB%A5%E6%B7%B7%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">“site” 和 “origin” 可以混用吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Corigin%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">我们说的 “origin” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E8%AF%B4%E7%9A%84-%E2%80%9Csite%E2%80%9D-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">我们说的 “site” 是什么意思？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Same-site-%E8%AF%B7%E6%B1%82-vs-cross-site-%E8%AF%B7%E6%B1%82"><span class="toc-number">7.</span> <span class="toc-text">Same-site 请求 vs. cross-site 请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cross-origin%EF%BC%8Csame-site-%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="toc-number">8.</span> <span class="toc-text">Cross-origin，same-site 的请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E7%A4%BA%E4%BE%8B"><span class="toc-number">9.</span> <span class="toc-text">在线示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86-site-%E5%92%8C-origin-%E6%B7%B7%E4%B8%BA%E4%B8%80%E8%B0%88%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-number">10.</span> <span class="toc-text">将 site 和 origin 混为一谈的代价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E5%AE%89%E5%85%A8%E6%84%9F"><span class="toc-number">10.1.</span> <span class="toc-text">错误的安全感</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9-SameSite-Strict-%E9%87%87%E7%94%A8%E8%BE%83%E6%85%A2"><span class="toc-number">10.2.</span> <span class="toc-text">对 SameSite&#x3D;Strict 采用较慢</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">11.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E9%81%97%EF%BC%882021-01-31%EF%BC%89"><span class="toc-number">12.</span> <span class="toc-text">补遗（2021&#x2F;01&#x2F;31）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%94%E8%B0%A2"><span class="toc-number">13.</span> <span class="toc-text">答谢</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://igno.ml/2021/04/20/the-great-samesite-confusion/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&text=关于 SameSite 的巨大困惑"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&is_video=false&description=关于 SameSite 的巨大困惑"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=关于 SameSite 的巨大困惑&body=Check out this article: https://igno.ml/2021/04/20/the-great-samesite-confusion/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://igno.ml/2021/04/20/the-great-samesite-confusion/&name=关于 SameSite 的巨大困惑&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://igno.ml/2021/04/20/the-great-samesite-confusion/&t=关于 SameSite 的巨大困惑"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://igno.ml/2021/04/29/the-great-samesite-confusion/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&text=关于 SameSite 的巨大困惑"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&is_video=false&description=关于 SameSite 的巨大困惑"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于 SameSite 的巨大困惑&body=Check out this article: https://igno.ml/2021/04/29/the-great-samesite-confusion/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&title=关于 SameSite 的巨大困惑"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://igno.ml/2021/04/29/the-great-samesite-confusion/&name=关于 SameSite 的巨大困惑&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://igno.ml/2021/04/29/the-great-samesite-confusion/&t=关于 SameSite 的巨大困惑"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
