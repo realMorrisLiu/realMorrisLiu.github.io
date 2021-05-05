@@ -159,7 +159,7 @@ Set-Cookie: StrictCookie=foo; Path=/; Max-Age=3600; SameSite=Strict
 
 ### 错误的安全感
 
-暗示 `SameSite` 对 *所有* cross-origin 请求生效会有坏处，因为这会导致开发人员错误的认为 `SameSite` 可以保护他们的用户受到 *所有* cross-origin 攻击。这钟误解对忽视检查子域的安全级别的开发者来说尤其危险。尤其是，
+暗示 `SameSite` 对 *所有* cross-origin 请求生效会有坏处，因为这会导致开发人员错误的认为 `SameSite` 可以保护他们的用户受到 *所有* cross-origin 攻击。这种误解对忽视检查子域的安全级别的开发者来说尤其危险。尤其是，
 
 - 子域接管，或
 - 在相同 site 的子域上的 [cross-site scripting（XSS）](https://owasp.org/www-community/attacks/xss/)的实例，或
