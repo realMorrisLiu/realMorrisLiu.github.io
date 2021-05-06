@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本文翻译自 Loren Brichter 的 Chrome is Bad 原文链接：https:&#x2F;&#x2F;chromeisbad.com  2020 年 12 月 12 日 简单版：Google Chrome 会在你电脑上装一个叫 Keystone 的更新程序，这与 WindowServer（系统进程）中大量无法解释的 CPU 使用率异常相关[1]，而且，即使 Chrome 没有运行，我的电脑也会非常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chrome 不好">
+<meta property="og:url" content="https://igno.ml/2021/05/06/chrome-is-bad/index.html">
+<meta property="og:site_name" content="IGNO Workshop">
+<meta property="og:description" content="本文翻译自 Loren Brichter 的 Chrome is Bad 原文链接：https:&#x2F;&#x2F;chromeisbad.com  2020 年 12 月 12 日 简单版：Google Chrome 会在你电脑上装一个叫 Keystone 的更新程序，这与 WindowServer（系统进程）中大量无法解释的 CPU 使用率异常相关[1]，而且，即使 Chrome 没有运行，我的电脑也会非常">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-05-06T09:58:07.000Z">
+<meta property="article:modified_time" content="2021-05-06T11:32:06.439Z">
+<meta property="article:author" content="Morris Liu">
+<meta property="article:tag" content="Chrome">
+<meta property="article:tag" content="Browser">
+<meta property="article:tag" content="macOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@realMorrisLiu">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Chrome 不好</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/realMorrisLiu">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post " href="/2021/04/29/the-great-samesite-confusion/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://igno.ml/2021/05/06/chrome-is-bad/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://igno.ml/2021/05/06/chrome-is-bad/&text=Chrome 不好"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://igno.ml/2021/05/06/chrome-is-bad/&is_video=false&description=Chrome 不好"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Chrome 不好&body=Check out this article: https://igno.ml/2021/05/06/chrome-is-bad/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://igno.ml/2021/05/06/chrome-is-bad/&name=Chrome 不好&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://igno.ml/2021/05/06/chrome-is-bad/&t=Chrome 不好"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OK-%E8%BF%99%E5%BE%88%E5%A5%87%E6%80%AA%EF%BC%8C%E4%BD%A0%E6%80%8E%E4%B9%88%E6%8A%8A-Chrome-%E5%92%8C-Keystone-%E5%88%A0%E6%8E%89%E7%9A%84%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">OK 这很奇怪，你怎么把 Chrome 和 Keystone 删掉的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E7%8E%B0%E5%9C%A8%E6%88%91%E8%AF%A5%E7%94%A8%E4%BB%80%E4%B9%88%E6%B5%8F%E8%A7%88%E5%99%A8%E5%91%A2%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">那现在我该用什么浏览器呢？</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Chrome 不好
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Morris Liu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-05-06T09:58:07.000Z" itemprop="datePublished">2021-05-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Browser/" rel="tag">Browser</a>, <a class="tag-link-link" href="/tags/Chrome/" rel="tag">Chrome</a>, <a class="tag-link-link" href="/tags/macOS/" rel="tag">macOS</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <blockquote>
+<p>本文翻译自 Loren Brichter 的 Chrome is Bad</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://chromeisbad.com/">https://chromeisbad.com</a></p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/lorenb/status/1337832978253230081">2020 年 12 月 12 日</a></p>
+<p>简单版：Google Chrome 会在你电脑上装一个叫 Keystone 的更新程序，这与 WindowServer（系统进程）中大量无法解释的 CPU 使用率<a target="_blank" rel="noopener" href="https://twitter.com/lorenb/timelines/1338892756752732169">异常相关</a><a href="#hiding">[1]</a>，而且，<u><strong>即使 Chrome 没有运行</strong></u><strong>，我的电脑也会非常卡</strong>。把 Chrome 和 Keystone 删掉之后，我电脑就<em>一直都很快了</em>。<a href="#delete">点这儿看看怎么做</a>。</p>
+<p>完整版：我感觉自己的全新 16 寸 MacBook Pro 即使简单滑一滑也会有点卡。在活动监视器中 *完全看不到* Chrome 占用 CPU，但是 <em>WindowServer</em> 的占用异常的高，大概有 80%（正常来说应该是少于 10% 的）。</p>
+<p>做了所有常规操作（退出应用，登出其他用户，重启，重置 PRAM/SMC 等）之后，并没有任何卵用，然后我就想起来之前我为了测试一个网站装了个 Chrome。</p>
+<p>我把 Chrome 删了，在删 Chrome 的一些配置文件和缓存的时候，也注意到了 Keystone。我把我能找到的所有 Google 的东西都删了，重启电脑，然后简直就是天壤之别。<em>所有应用都瞬间响应并且肉眼可见的快了，并且 WindowServer 的 CPU 占用率也降到了 10% 以下</em>。</p>
+<p>然后我又想到了其它事情，自从我买了 2015 款 iMac，我的家人就一直在抱怨它很卡。我试了我能想到的所有方法 —— 它搭载了 Fusion 磁盘，然后症状表现的跟 SSD 坏了一样 —— 但是磁盘诊断没有任何毛病。我们甚至把电脑抹掉然后全新安装过好几次。</p>
+<p>然后我想起来了，<em>每次我们重装完电脑之后，第一件事就是装 Chrome</em>。我把 Chrome 和 Keystone 产生的所有垃圾文件都删了，重启，然后它快的 <em>就像一台全新的电脑</em>。</p>
+<p>没错，我知道这听起来就像不靠谱的电视广告，但是这个方法如此有用以至于我花了整整 5 美元买了这个域名并且建了这个网站，即使这样让我看起来像疯了一样。</p>
+<h2 id="OK-这很奇怪，你怎么把-Chrome-和-Keystone-删掉的？"><a href="#OK-这很奇怪，你怎么把-Chrome-和-Keystone-删掉的？" class="headerlink" title="OK 这很奇怪，你怎么把 Chrome 和 Keystone 删掉的？"></a><a name="delete"></a>OK 这很奇怪，你怎么把 Chrome 和 Keystone 删掉的？</h2><blockquote>
+<p>2020 年 12 月 15 日更新，Google Chromium 团队的一些好人很严肃的对待这个问题，如果你对这很感兴趣并且可以贡献一些 sample 的话，请看<a target="_blank" rel="noopener" href="https://twitter.com/lorenb/status/1339364446305710088">这个主题</a> —— 到 <a target="_blank" rel="noopener" href="https://bugs.chromium.org/p/chromium/issues/detail?id=1158402#c18">crbug 1158402</a> 的直链。</p>
+</blockquote>
+<ol>
+<li>打开 <strong><code>/应用程序</code></strong> 文件夹把 <strong><code>Chrome</code></strong> 拖到废纸篓里。</li>
+<li>在 <strong><code>访达</code></strong> 中点击 <strong><code>前往</code></strong> 菜单（在屏幕最上方），然后点击 “ <strong><code>前往文件夹...</code></strong> ”。</li>
+<li>在里面输入 <strong><code>/资源库</code></strong> 然后按回车。<ul>
+<li>检查下列文件夹： <strong><code>LaunchAgents</code></strong> ， <strong><code>LaunchDaemons</code></strong> ， <strong><code>Application Support</code></strong> ， <strong><code>Caches</code></strong> ， <strong><code>Preferences</code></strong> 。</li>
+<li>删掉所有 <strong><code>Google</code></strong> 文件夹和所有以 <strong><code>com.google...</code></strong> 和 <strong><code>com.google.keystone...</code></strong> 开头的东西</li>
+</ul>
+</li>
+<li>再打开 “ <strong><code>前往文件夹...</code></strong> ”。</li>
+<li>在里面输入 <strong><code>~/资源库</code></strong> 然后按回车。（注意这个 “~”）<ul>
+<li>检查下列文件夹： <strong><code>LaunchAgents</code></strong> ， <strong><code>Application Support</code></strong> ， <strong><code>Caches</code></strong> ， <strong><code>Preferences</code></strong> 。</li>
+<li>删掉所有 <strong><code>Google</code></strong> 文件夹和所有以 <strong><code>com.google...</code></strong> 和 <strong><code>com.google.keystone...</code></strong> 开头的东西</li>
+</ul>
+</li>
+<li>清倒废纸篓，重启电脑。</li>
+</ol>
+<h2 id="那现在我该用什么浏览器呢？"><a href="#那现在我该用什么浏览器呢？" class="headerlink" title="那现在我该用什么浏览器呢？"></a>那现在我该用什么浏览器呢？</h2><p><em>未完待续</em></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/realMorrisLiu">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OK-%E8%BF%99%E5%BE%88%E5%A5%87%E6%80%AA%EF%BC%8C%E4%BD%A0%E6%80%8E%E4%B9%88%E6%8A%8A-Chrome-%E5%92%8C-Keystone-%E5%88%A0%E6%8E%89%E7%9A%84%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">OK 这很奇怪，你怎么把 Chrome 和 Keystone 删掉的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E7%8E%B0%E5%9C%A8%E6%88%91%E8%AF%A5%E7%94%A8%E4%BB%80%E4%B9%88%E6%B5%8F%E8%A7%88%E5%99%A8%E5%91%A2%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">那现在我该用什么浏览器呢？</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://igno.ml/2021/05/06/chrome-is-bad/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://igno.ml/2021/05/06/chrome-is-bad/&text=Chrome 不好"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://igno.ml/2021/05/06/chrome-is-bad/&is_video=false&description=Chrome 不好"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Chrome 不好&body=Check out this article: https://igno.ml/2021/05/06/chrome-is-bad/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://igno.ml/2021/05/06/chrome-is-bad/&title=Chrome 不好"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://igno.ml/2021/05/06/chrome-is-bad/&name=Chrome 不好&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://igno.ml/2021/05/06/chrome-is-bad/&t=Chrome 不好"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021
+    Morris Liu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/realMorrisLiu">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'igno-workshop';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
+</body>
+</html>
