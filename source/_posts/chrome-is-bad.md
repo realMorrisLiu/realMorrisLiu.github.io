@@ -45,5 +45,31 @@ tags:
 
 ## 那现在我该用什么浏览器呢？
 
+[Safari](https://www.apple.com/safari/) 挺好的并且是你 Mac 上预装的。它又快又高效。如果你需要一个基于 Chromium 的浏览器的话，可以试试 [Brave](https://brave.com/)，[Opera](https://www.opera.com/)，或者 [Vivaldi](https://vivaldi.com/)。（Brave 和 Vivaldi 这俩都用了一个叫 [Sparkle](https://sparkle-project.org/) 的开源库，用来提供更新功能，就不可能出现这个问题了。）Firefox 有一个令我很在意的指针输入延迟非常明显的问题，可能其他人觉得还好。（Mozilla 是一堆目光短浅的笨蛋，他们解雇了 Servo 团队。如果 Servo 团队重组的话，我会推荐他们做的所有东西）。
+
+## Keystone 到底是怎么一回事？
+
+2009 年，Google 把它加到 Google Earth 里的时候，Wired 第一次[报道了 Keystone](https://www.wired.com/2009/02/why-googles-sof/)。一直以来它都在做一些会让 Mac 崩溃的奇怪的事情，对于一个自动更新程序来说，这些事情完全没必要。
+
+我要对所有在 Google 从事 Chrome 相关工作的好人们说：在你们写的代码和人们电脑上发生的事情之间有点问题。我希望你们可以跟踪这个问题并且给我们一个诚实的事件剖析。
+
+------
+
+更新于 2020 年 12 月 15 日：
+
+收集的一些轶事：
+
+https://twitter.com/lorenb/timelines/1338892756752732169
+
+## FAQ
+
+### 只需要重启可能就能解决这个问题。
+
+不会的，这个问题即使是重启，没有任何正在建立索引或者正在运行程序等情况的时候，也一直会出现，否则完全无法解释。活动监视器里没有任何明显的问题，许多人都认真地尝试进行故障排除，但无济于事（显然包括重启），并且唯一可以 *立即且永远* 解决这个问题的方法就是删掉 Chrome 和 Keystone。
+
+### 这是观察者效应
+
+确实，活动监视器本身也占用 CPU，所以只是寻找这个问题的话也会让 WindowsServer 的占用稍稍升高。这并不是实际正在发生的事情。这个问题十分严重，活动监视器的 CPU 占用的影响完全无法跟 WindowServer CPU 占用的抖动相提并论（用 ‘top’ 命令也不会有任何肉眼可见的区别）。
+
 *未完待续*
 
