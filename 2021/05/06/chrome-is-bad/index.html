@@ -14,7 +14,7 @@
 <meta property="og:description" content="本文翻译自 Loren Brichter 的 Chrome is Bad 原文链接：https:&#x2F;&#x2F;chromeisbad.com  2020 年 12 月 12 日 简单版：Google Chrome 会在你电脑上装一个叫 Keystone 的更新程序，WindowServer（系统进程）中大量无法解释的 CPU 使用率跟这个异常相关[1]，而且，即使 Chrome 没在运行，我的电脑也会很卡">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-05-06T09:58:07.000Z">
-<meta property="article:modified_time" content="2021-07-22T10:21:24.893Z">
+<meta property="article:modified_time" content="2021-09-09T02:51:25.820Z">
 <meta property="article:author" content="Morris Liu">
 <meta property="article:tag" content="Chrome">
 <meta property="article:tag" content="Browser">
@@ -191,7 +191,7 @@
 <p>更新于 2020 年 12 月 15 日：</p>
 <p>收集的一些轶事：</p>
 <p><a target="_blank" rel="noopener" href="https://twitter.com/lorenb/timelines/1338892756752732169">https://twitter.com/lorenb/timelines/1338892756752732169</a></p>
-<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="只需要重启可能就能解决这个问题。"><a href="#只需要重启可能就能解决这个问题。" class="headerlink" title="只需要重启可能就能解决这个问题。"></a>只需要重启可能就能解决这个问题。</h3><p>不会的，即使是重启，没有任何正在建立索引或者正在运行程序等情况的时候，这个问题也一直会出现，否则完全无法解释。活动监视器里没有任何明显的问题，许多人都认真地尝试进行故障排除，但无济于事（显然包括重启），并且唯一可以 <em>立即且永远</em> 解决这个问题的方法就是删掉 Chrome 和 Keystone。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="只需要重启可能就能解决这个问题。"><a href="#只需要重启可能就能解决这个问题。" class="headerlink" title="只需要重启可能就能解决这个问题。"></a>只需要重启可能就能解决这个问题。</h3><p>不会的，即使重启了，没有任何正在建立索引或者正在运行程序等情况的时候，这个问题也一直会出现，否则完全无法解释。活动监视器里没有任何明显的问题，许多人都认真地尝试进行故障排除，但无济于事（显然包括重启），并且唯一可以 <em>一劳永逸</em> 解决这个问题的方法就是删掉 Chrome 和 Keystone。</p>
 <h3 id="这是观察者效应。"><a href="#这是观察者效应。" class="headerlink" title="这是观察者效应。"></a>这是观察者效应。</h3><p>确实，活动监视器本身也占用 CPU，所以只是寻找这个问题的话也会让 WindowsServer 的占用稍稍升高。这并不是实际正在发生的事情。这个问题十分严重，活动监视器的 CPU 占用的影响完全无法跟 WindowServer CPU 占用的抖动相提并论（用 ‘top’ 命令也不会有任何肉眼可见的区别）。对大多数人来说，这个操作极大地改善了响应速度，电池续航，风扇噪音等，可以立刻判断问题出在哪儿，以至于实际测量差异的量是不太相关了（虽然有些帮助）。</p>
 <h3 id="这是安慰剂效应！"><a href="#这是安慰剂效应！" class="headerlink" title="这是安慰剂效应！"></a>这是安慰剂效应！</h3><p>这并不是个小问题，并且改进是立竿见影并且可测试的。请参阅上文。</p>
 <h3 id="活动监视器看不到？！难以置信！"><a href="#活动监视器看不到？！难以置信！" class="headerlink" title="活动监视器看不到？！难以置信！"></a>活动监视器看不到？！难以置信！</h3><p>（这篇文章的原始版本写了 keystone 会在活动监视器中隐藏，没有准确用词是我的锅。）</p>
