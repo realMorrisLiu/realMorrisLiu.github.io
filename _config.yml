@@ -133,9 +133,6 @@ theme_config:
     fb_admins:
     twitter_id: realMorrisLiu
     google_plus:
-  disqus:
-    enabled: true
-    shortname: igno-workshop
   gravatar:
     email: morrisliu1994@outlook.com
     hash: 5f171941ea289f3e322d690afc84d950
